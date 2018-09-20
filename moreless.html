@@ -1,0 +1,100 @@
+<html>
+
+<head>
+    <link type="text/css" rel="stylesheet" href="bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="bootstrap-vue.css" />
+
+    <script src="vue.js"></script>
+    <!-- Add this after vue.js -->
+    <script src="polyfill.min.js"></script>
+    <script src="bootstrap-vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="text-left" v-for="item in items" style="margin-bottom: 5px">
+            <b-button v-for="n in item.num" :variant="item.style" style="margin-right: 5px">{{t}}</b-button>
+        </div>
+        <hr>
+        <div class="text-left">
+            <b-alert show variant="light">
+                <b-button :variant="qs.a">{{t}}</b-button>
+                <b-form-select v-model="selected" :options="options" style="width: 4%"></b-form-select>
+                <b-button :variant="qs.b">{{t}}</b-button>
+                <b-badge :variant="bdg.v">{{bdg.t}}</b-badge>
+            </b-alert>
+        </div>
+        <b-button @click="refresh">Next</b-button>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                charOfDay: '',
+                selected: null,
+                styles: ['success', 'warning', 'outline-success', 'light' ,'outline-danger', 'danger', 'primary', 'secondary', 'outline-warning', 'outline-primary'],
+                options: [{ value: '>', text: '>' }, { value: '=', text: '=' }, { value: '<', text: '<' }],
+                a: 0,
+                b: 0,
+                t: 'A'
+            },
+
+            created: function() {
+                console.log("create called")
+                var tmp = Math.floor(Math.random() * 26) + 65
+                this.t = String.fromCharCode(tmp)
+                this.refresh()
+            },
+
+            methods: {
+                refresh: function () {
+                    this.a = Math.floor(Math.random() * this.styles.length)
+                    this.b = Math.floor(Math.random() * this.styles.length)
+                    this.selected = null;
+                }
+            },
+            computed: {
+                items: function () {
+                    return this.styles.map(function (s) {
+                        return {
+                            num: Math.floor(Math.random() * 10) + 1,
+                            style: s
+                        }
+                    })
+                },
+
+                qs: function () {
+                    var exp = '=';
+
+                    if (this.items[this.a].num > this.items[this.b].num) {
+                        exp = '>';
+                    }
+
+                    if (this.items[this.b].num > this.items[this.a].num) {
+                        exp = '<';
+                    }
+
+                    return {
+                        a: this.items[this.a].style,
+                        b: this.items[this.b].style,
+                        exp: exp
+                    }
+                },
+
+                bdg: function () {
+                    if (!this.selected) {
+                        return {v: 'light', t: 'Select one'}
+                    }
+                    if (this.selected === this.qs.exp) {
+                        return { v: 'success', t: 'Great!' }
+                    } else {
+                        return { v: 'danger', t: 'Try again' }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
