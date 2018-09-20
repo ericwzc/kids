@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <link type="text/css" rel="stylesheet" href="bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="bootstrap-vue.css" />
+
+    <script src="vue.js"></script>
+    <!-- Add this after vue.js -->
+    <script src="polyfill.min.js"></script>
+    <script src="bootstrap-vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="text-center" v-if="loaded">
+            <img thumbnail fluid :src="pics.a1" alt="Thumbnail" style="margin-bottom: 5px" />
+            <img thumbnail fluid :src="pics.a2" alt="Thumbnail" style="margin-bottom: 5px" />
+            <img thumbnail fluid :src="pics.a3" alt="Thumbnail" style="margin-bottom: 5px" />
+        </div>
+        <div class="text-center" v-if="loaded">
+            <img thumbnail fluid :src="pics.b1" alt="Thumbnail" style="margin-bottom: 5px" />
+            <img thumbnail fluid :src="pics.b2" alt="Thumbnail" style="margin-bottom: 5px" />
+            <img thumbnail fluid :src="pics.b3" alt="Thumbnail" style="margin-bottom: 5px" />
+        </div>
+        <div class="text-center" v-if="loaded">
+            <img thumbnail fluid :src="pics.c1" alt="Thumbnail" style="margin-bottom: 5px" />
+            <img thumbnail fluid :src="pics.c2" alt="Thumbnail" style="margin-bottom: 5px" />
+            <img thumbnail fluid :src="pics.c3" alt="Thumbnail" style="margin-bottom: 5px" />
+        </div>
+        <div class="text-left" v-if="loaded">
+            <b-alert :show="loaded" variant="light">
+                <img thumbnail fluid :src="qs.a" alt="Thumbnail" />
+                is on the
+                <b-form-select v-model="selected" :options="options" style="width: 10%"></b-form-select>
+                of
+                <img thumbnail fluid :src="qs.b" alt="Thumbnail" />
+                <b-badge :variant="bdg.v">{{bdg.t}}</b-badge>
+            </b-alert>
+        </div>
+        <b-button @click="refresh">Next</b-button>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                a: 0, b: 0, selected: null, loaded: false, pics: {},
+                ps: ['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1', 'c2', 'c3'],
+                options: [
+                    {
+                        value: 'left',
+                        text: 'left'
+                    },
+                    {
+                        value: 'right',
+                        text: 'right'
+                    },
+                    {
+                        value: 'top',
+                        text: 'top'
+                    },
+                    {
+                        value: 'down',
+                        text: 'down'
+                    }
+                ]
+            },
+            mounted: function () {
+                fetch('https://picsum.photos/list').then(resp =>
+                    resp.json()
+                ).then(data => {
+                    var obj = {}
+                    var ids = data.map(function (e) { return e.id })
+                    var selected = []
+                    console.log(ids)
+                    while (selected.length != 9) {
+                        var tmp = Math.floor(Math.random() * ids.length)
+                        if (!obj[tmp + '']) {
+                            obj[tmp] = 1
+                            selected.push(ids[tmp])
+                        }
+                    }
+                    console.log(selected)
+                    for (var i = 0; i < 9; i++) {
+                        this.pics[this.ps[i]] = 'https://picsum.photos/100/100/?image=' + selected[i]
+                    }
+                    console.log(this.pics)
+                    this.refresh()
+                    this.loaded = true
+                })
+            },
+            methods: {
+                refresh: function () {
+                    this.a = Math.floor(Math.random() * this.ps.length)
+                    this.b = Math.floor(Math.random() * this.ps.length)
+                    while (this.b == this.a) {
+                        this.b = Math.floor(Math.random() * this.ps.length)
+                    }
+                    this.selected = null;
+                }
+            },
+            computed: {
+                qs: function () {
+                    var exp = '';
+                    var p = /^(.)(\d)$/
+                    var m1 = p.exec(this.ps[this.a])
+                    var m2 = p.exec(this.ps[this.b])
+                    if (m1[1] == m2[1]) {
+                        if (m1[2] < m2[2]) {
+                            exp = 'left'
+                        } else {
+                            exp = 'right'
+                        }
+                    } else {
+                        if (m1[1] < m2[1]) {
+                            exp = 'top'
+                        } else {
+                            exp = 'down'
+                        }
+                    }
+                    return {
+                        a: this.pics[this.ps[this.a]].replace(/100\/100/, '50/50'),
+                        b: this.pics[this.ps[this.b]].replace(/100\/100/, '50/50'),
+                        exp: exp
+                    }
+                },
+                bdg: function () {
+                    if (!this.selected) {
+                        return { v: 'light', t: 'Select one' }
+                    }
+                    if (this.selected === this.qs.exp) {
+                        return { v: 'success', t: 'Great!' }
+                    } else {
+                        return { v: 'danger', t: 'Try again' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
