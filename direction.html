@@ -30,14 +30,13 @@
         <div class="text-left" v-if="loaded">
             <b-alert :show="loaded" variant="light">
                 <img thumbnail fluid :src="qs.a" alt="Thumbnail" />
-                is on the
+                在
+                <img thumbnail fluid :src="qs.b" alt="Thumbnail" /> 的
                 <b-form-select v-model="selected" :options="options" style="width: 10%"></b-form-select>
-                of
-                <img thumbnail fluid :src="qs.b" alt="Thumbnail" />
                 <b-badge :variant="bdg.v">{{bdg.t}}</b-badge>
             </b-alert>
         </div>
-        <b-button @click="refresh">Next</b-button>
+        <b-button @click="refresh" v-if="loaded">Next</b-button>
     </div>
     <script>
         var app = new Vue({
@@ -48,19 +47,19 @@
                 options: [
                     {
                         value: 'left',
-                        text: 'left'
+                        text: '左'
                     },
                     {
                         value: 'right',
-                        text: 'right'
+                        text: '右'
                     },
                     {
                         value: 'top',
-                        text: 'top'
+                        text: '上'
                     },
                     {
                         value: 'down',
-                        text: 'down'
+                        text: '下'
                     }
                 ]
             },
@@ -91,10 +90,15 @@
             methods: {
                 refresh: function () {
                     this.a = Math.floor(Math.random() * this.ps.length)
-                    this.b = Math.floor(Math.random() * this.ps.length)
-                    while (this.b == this.a) {
-                        this.b = Math.floor(Math.random() * this.ps.length)
+                    var p = /^(.)(\d)$/
+                    var m = p.exec(this.ps[this.a])
+                    var cand = []
+                    for (var i = 0; i < this.ps.length; i++) {
+                        if (i != this.a && (this.ps[i].endsWith(m[2]) || this.ps[i].startsWith(m[1]))) {
+                            cand.push(i)
+                        }
                     }
+                    this.b = cand[Math.floor(Math.random() * cand.length)]
                     this.selected = null;
                 }
             },
