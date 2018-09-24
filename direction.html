@@ -27,7 +27,16 @@
             <img thumbnail fluid :src="pics.c2" alt="Thumbnail" style="margin-bottom: 5px" />
             <img thumbnail fluid :src="pics.c3" alt="Thumbnail" style="margin-bottom: 5px" />
         </div>
-        <div class="text-left" v-if="loaded">
+        <div class="text-left" v-if="loaded" v-show="pt">
+            <b-alert :show="loaded" variant="light">
+                <img thumbnail fluid :src="qs.b" alt="Thumbnail" /> 的
+                <b-form-select v-model="selected" :options="options" style="width: 10%"></b-form-select>
+                可以找到
+                <img thumbnail fluid :src="qs.a" alt="Thumbnail" />
+                <b-badge :variant="bdg.v">{{bdg.t}}</b-badge>
+            </b-alert>
+        </div>
+        <div class="text-left" v-if="loaded" v-show="!pt">
             <b-alert :show="loaded" variant="light">
                 <img thumbnail fluid :src="qs.a" alt="Thumbnail" />
                 在
@@ -61,7 +70,8 @@
                         value: 'down',
                         text: '下'
                     }
-                ]
+                ],
+                mode: 0
             },
             mounted: function () {
                 fetch('https://picsum.photos/list').then(resp =>
@@ -100,9 +110,17 @@
                     }
                     this.b = cand[Math.floor(Math.random() * cand.length)]
                     this.selected = null;
+                    this.mode = Math.floor(Math.random() * 4)
                 }
             },
             computed: {
+                pt: function () {
+                    if (this.mode % 2 == 0) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }, 
                 qs: function () {
                     var exp = '';
                     var p = /^(.)(\d)$/
