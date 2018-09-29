@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <link type="text/css" rel="stylesheet" href="bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="bootstrap-vue.css" />
+
+    <script src="vue.js"></script>
+    <!-- Add this after vue.js -->
+    <script src="polyfill.min.js"></script>
+    <script src="bootstrap-vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <table border="1px solid" style="align-content: center; width: 50%">
+            <tr>
+               <td>{{a[0]}}</td> 
+               <td>{{a[1]}}</td> 
+               <td>{{a[2]}}</td> 
+               <td>{{a[3]}}</td> 
+               <td>{{a[4]}}</td> 
+            </tr>
+            <tr>
+               <td>{{a[5]}}</td> 
+               <td>{{a[6]}}</td> 
+               <td>{{a[7]}}</td> 
+               <td>{{a[8]}}</td> 
+               <td>{{a[9]}}</td> 
+            </tr>
+            <tr>
+               <td>{{a[10]}}</td> 
+               <td>{{a[11]}}</td> 
+               <td>{{a[12]}}</td> 
+               <td>{{a[13]}}</td> 
+               <td>{{a[14]}}</td> 
+            </tr>
+            <tr>
+               <td>{{a[15]}}</td> 
+               <td>{{a[16]}}</td> 
+               <td>{{a[17]}}</td> 
+               <td>{{a[18]}}</td> 
+               <td>{{a[19]}}</td> 
+            </tr>
+            <tr>
+               <td>{{a[20]}}</td> 
+               <td>{{a[21]}}</td> 
+               <td>{{a[22]}}</td> 
+               <td>{{a[23]}}</td> 
+               <td>{{a[24]}}</td> 
+            </tr>
+        </table>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                a: []
+            },
+
+            created: function() {
+                for (var i = 0; i < 25; i++) {
+                    this.a.push(i)
+                }
+
+                for (var j = 24; j > 0; j--) {
+                    var t = Math.floor(Math.random() * j)
+                    var tmp = this.a[j]
+                    this.a[j] = this.a[t]
+                    this.a[t] = tmp
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
