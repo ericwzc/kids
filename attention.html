@@ -12,61 +12,66 @@
 
 <body>
     <div id="app">
-        <table border="1px solid" style="align-content: center; width: 50%">
-            <tr>
-               <td>{{a[0]}}</td> 
-               <td>{{a[1]}}</td> 
-               <td>{{a[2]}}</td> 
-               <td>{{a[3]}}</td> 
-               <td>{{a[4]}}</td> 
-            </tr>
-            <tr>
-               <td>{{a[5]}}</td> 
-               <td>{{a[6]}}</td> 
-               <td>{{a[7]}}</td> 
-               <td>{{a[8]}}</td> 
-               <td>{{a[9]}}</td> 
-            </tr>
-            <tr>
-               <td>{{a[10]}}</td> 
-               <td>{{a[11]}}</td> 
-               <td>{{a[12]}}</td> 
-               <td>{{a[13]}}</td> 
-               <td>{{a[14]}}</td> 
-            </tr>
-            <tr>
-               <td>{{a[15]}}</td> 
-               <td>{{a[16]}}</td> 
-               <td>{{a[17]}}</td> 
-               <td>{{a[18]}}</td> 
-               <td>{{a[19]}}</td> 
-            </tr>
-            <tr>
-               <td>{{a[20]}}</td> 
-               <td>{{a[21]}}</td> 
-               <td>{{a[22]}}</td> 
-               <td>{{a[23]}}</td> 
-               <td>{{a[24]}}</td> 
-            </tr>
-        </table>
+        <template>
+            <b-table striped hover :items="items" :fields="fields"></b-table>
+        </template>
     </div>
     <script>
         var app = new Vue({
             el: '#app',
             data: {
-                a: []
+                items: [],
+                fields: [
+                    {
+                        key: 'v1',
+                        label: ''
+                    },
+                    {
+                        key: 'v2',
+                        label: ''
+                    },
+                    {
+                        key: 'v3',
+                        label: ''
+                    },
+                    {
+                        key: 'v4',
+                        label: ''
+                    },
+                    {
+                        key: 'v5',
+                        label: ''
+                    }
+                ]
             },
 
-            created: function() {
+            created: function () {
+                var a = []
                 for (var i = 0; i < 25; i++) {
-                    this.a.push(i)
+                    a.push(i)
                 }
 
                 for (var j = 24; j > 0; j--) {
                     var t = Math.floor(Math.random() * j)
-                    var tmp = this.a[j]
-                    this.a[j] = this.a[t]
-                    this.a[t] = tmp
+                    var tmp = a[j]
+                    a[j] = a[t]
+                    a[t] = tmp
+                }
+
+
+                for (var i = 0; i < 25; i = i + 5) {
+                    this.items.push(this.helper(i, a))
+                }
+            },
+
+            methods: {
+                helper: function (start, a) {
+                    var obj = {}
+                    for (var i = start; i < start + 5; i++) {
+                        var k = 'v' + (i % 5 + 1);
+                        obj[k] = a[i];
+                    }
+                    return obj
                 }
             }
         });
